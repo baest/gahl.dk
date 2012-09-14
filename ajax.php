@@ -191,11 +191,12 @@ function define_command($command) {
 		return;
 	}
 
-	$command = $matches[1];
-	$definitions = $matches[2];
+	$definitions = $matches[3];
 
-	if (!$definitions)
-		$definitions = $matches[3];
+	$command = strtolower($matches[1]);
+
+	if (!$command)
+		$command = strtolower($matches[2]);
 
 	if (!$definitions) {
 		echo "Du skal angive en betydning";
