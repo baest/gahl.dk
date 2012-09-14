@@ -74,11 +74,10 @@ function write_to_wall($safe_content, $a_human_writes_this=true) {
 function command() {
 	// Det er kommandoer der ikke bliver slået op i DBen, men som er hard code implementeret.
 	$true_commands = array("wall", "væg", "skriv", "whatup");
+
+	$command = strtolower(strtok($_REQUEST['command'], ' '));
 	
-	if(in_array( strtok($_REQUEST['command'], ' '), $true_commands )) {
-		
-		$command = strtolower(strtok($_REQUEST['command'], ' '));
-		
+	if(in_array($command, $true_commands)) {
 		if($command=='wall' || $command=='væg' || $command=='skriv') {
 			$message = mysql_real_escape_string( substr($_REQUEST['command'], 0+strpos($_REQUEST['command'], ' ') ) );
 			if($message != '' && strlen($message)>0) {
@@ -103,17 +102,14 @@ function command() {
 		}
 		return;
 	}
-	
-//	$query = "SELECT * FROM commands WHERE command LIKE '".$safe_command."%'";
-//	$result = mysql_query($query) or die(mysql_error());
 
-	$safe_command = mysql_real_escape_string($_REQUEST['command']);
+	$safe_command = mysql_real_escape_string($command);
 
 	//Gem kommandoen
 	save_command_call($safe_command);
 
 	//Evaluer kommandoen.
-	$query = "SELECT * FROM commands WHERE command='".$safe_command."'";
+	$query = "SELECT * FROM commands WHERE command LIKE '".$safe_command."%'";
 	$result = mysql_query($query) or die(mysql_error());
 	if($row = mysql_fetch_assoc($result)) {
 		eval($row['code']);
