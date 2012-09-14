@@ -76,6 +76,10 @@ function command() {
 	$true_commands = array("wall", "væg", "skriv", "whatup");
 
 	$command = strtolower(strtok($_REQUEST['command'], ' '));
+
+	if ($command == 'define') {
+		return define_command($_REQUEST['command']);
+	}
 	
 	if(in_array($command, $true_commands)) {
 		if($command=='wall' || $command=='væg' || $command=='skriv') {
@@ -103,14 +107,18 @@ function command() {
 		return;
 	}
 
-	$safe_command = mysql_real_escape_string($command);
+	$safe_command = mysql_real_escape_string(strtolower($_REQUEST['command']));
 
 	//Gem kommandoen
 	save_command_call($safe_command);
 
 	//Evaluer kommandoen.
-	$query = "SELECT * FROM commands WHERE command LIKE '".$safe_command."%'";
+	$query = "SELECT * FROM commands WHERE lower(command) = '".$safe_command."'";
 	$result = mysql_query($query) or die(mysql_error());
+	if (!$result) {
+		$query = "SELECT * FROM commands WHERE lower(command) LIKE '".$safe_command."%'";
+		$result = mysql_query($query) or die(mysql_error());
+	}
 	if($row = mysql_fetch_assoc($result)) {
 		eval($row['code']);
 	} else {
@@ -173,6 +181,38 @@ function wallanswer($inputstring)
 	$randomsvarresult = mysql_query($randomsvarquery) or die(mysql_error());
 	$randomsvar = mysql_fetch_assoc($randomsvarresult);
 	return  $randomsvar["Answer"];
+}
+
+function define_command($command) {
+	$command = stripslashes($_REQUEST['command']);
+	$matches = array();
+	if (!preg_match('/^define (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
+		echo "Du er en FEJL!";
+		return;
+	}
+
+	$command = $matches[1];
+	$definitions = $matches[2];
+
+	if (!$definitions)
+		$definitions = $matches[3];
+
+	if (!$definitions) {
+		echo "Du skal angive en betydning";
+		return;
+	}
+
+	$query = "SELECT * FROM commands WHERE lower(command) = '".mysql_real_escape_string($command)."'";
+	$result = mysql_query($query) or die(mysql_error());
+	if($row = mysql_fetch_assoc($result)) {
+		$sql = "UPDATE commands SET code = 'echo \'" . mysql_real_escape_string($definitions) . "\';' WHERE command = '{$row['command']}'";
+		mysql_query($sql);
+		echo "Kommando opdateret";
+	} else {
+		$sql = "INSERT INTO commands (command, code) VALUES('" . mysql_real_escape_string($command) . "', 'echo \'" . mysql_real_escape_string($definitions) . "\';')";
+		mysql_query($sql);
+		echo "Ny kommando oprettet";
+	}
 }
 
 
