@@ -216,6 +216,24 @@ function define_command($command) {
 	}
 }
 
+function write_to_IRC($written_by, $msg) {
+	$irc_message = urlencode("$written_by sagde $msg");
+	$irc_url = "http://sokr.dk/write_to_bacid12_irc.php?m=$irc_message";
+	$ch = curl_init( $irc_url );
+	 
+	$options = array(
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HTTPHEADER => array('Content-type: application/json') ,
+		CURLOPT_POSTFIELDS => $irc_url
+	);
+	 
+	curl_setopt_array( $ch, $options );
+	 
+	$result = json_decode(curl_exec($ch));
+
+	return $result;
+}
+
 
 require_once('includes/db_close.php');
 
