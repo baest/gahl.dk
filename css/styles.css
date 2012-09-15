@@ -44,7 +44,7 @@ body {
 	width:100%;
 }
 #output {
-	overflow: hidden;
+	overflow: auto;
 	height: 275px;
 	width: 600px;
 	position:absolute;

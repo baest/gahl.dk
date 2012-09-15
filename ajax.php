@@ -79,7 +79,7 @@ function command() {
 
 	$command = strtolower(strtok($_REQUEST['command'], ' '));
 
-	if ($command == 'define') {
+	if (preg_match('/^def(?:ine|img|youtube)$/', $command)) {
 		return define_command($_REQUEST['command']);
 	}
 	
@@ -188,21 +188,29 @@ function wallanswer($inputstring)
 function define_command($command) {
 	$command = stripslashes($_REQUEST['command']);
 	$matches = array();
-	if (!preg_match('/^define (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
+	if (!preg_match('/^(def\w+) (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
 		echo "Du er en FEJL!";
 		return;
 	}
 
-	$definitions = $matches[3];
+	$type = $matches[1];
+	$definitions = $matches[4];
 
-	$command = strtolower($matches[1]);
+	$command = strtolower($matches[2]);
 
 	if (!$command)
-		$command = strtolower($matches[2]);
+		$command = strtolower($matches[3]);
 
 	if (!$definitions) {
 		echo "Du skal angive en betydning";
 		return;
+	}
+
+	if ($type == 'defimg')
+		$definitions = "<img src=\"$definitions\" height=\"300\" />";
+	elseif ($type == 'defyoutube') {
+		$definitions = (strpos($definitions,'?') == false) ? $definitions . '?' : $definitions . '&'; //Add url parameter separater to end of definition url
+		$definitions = "<iframe width=\"560\" height=\"290\" src=\"$definitions\"" . "autoplay=1\" frameborder=\"0\" allowfullscreen></iframe>";
 	}
 
 	$query = "SELECT * FROM commands WHERE lower(command) = '".mysql_real_escape_string($command)."'";
