@@ -82,6 +82,12 @@ function command() {
 	if (preg_match('/^def(?:ine|img|youtube)$/', $command)) {
 		return define_command($_REQUEST['command']);
 	}
+
+	$matches = array();
+	if (preg_match('/^Er de[tr] (.+?)(?:\?|$)/', $_REQUEST['command'], $matches)) {
+		echo print_r($matches, 1);
+		return get_is_it_command($_REQUEST['command'], $matches[1]);
+	}
 	
 	if(in_array($command, $true_commands)) {
 		if($command=='wall' || $command=='væg' || $command=='skriv') {
@@ -103,10 +109,10 @@ function command() {
 	save_command_call($safe_command);
 
 	//Evaluer kommandoen.
-	$query = "SELECT * FROM commands WHERE lower(command) = '".$safe_command."'";
+	$query = "SELECT * FROM commands WHERE command_type = 'normal' AND lower(command) = '".$safe_command."'";
 	$result = mysql_query($query) or die(mysql_error());
 	if (!$result) {
-		$query = "SELECT * FROM commands WHERE lower(command) LIKE '".$safe_command."%'";
+		$query = "SELECT * FROM commands WHERE command_type = 'normal' AND lower(command) LIKE '".$safe_command."%'";
 		$result = mysql_query($query) or die(mysql_error());
 	}
 	if($row = mysql_fetch_assoc($result)) {
@@ -200,7 +206,7 @@ function define_command($command) {
 		$definitions = "<iframe width=\"560\" height=\"290\" src=\"http://www.youtube.com/embed/$definitions" . "?autoplay=1&autohide=1\" frameborder=\"0\" allowfullscreen></iframe>";
 	}
 
-	$query = "SELECT * FROM commands WHERE lower(command) = '".mysql_real_escape_string($command)."'";
+	$query = "SELECT * FROM commands WHERE command_type = 'normal' AND lower(command) = '".mysql_real_escape_string($command)."'";
 	$result = mysql_query($query) or die(mysql_error());
 	if($row = mysql_fetch_assoc($result)) {
 		$sql = "UPDATE commands SET code = 'echo \'" . mysql_real_escape_string($definitions) . "\';' WHERE command = '{$row['command']}'";
@@ -229,6 +235,16 @@ function write_to_IRC($written_by, $msg) {
 	$result = json_decode(curl_exec($ch));
 
 	return $result;
+}
+
+function get_is_it_command($command, $what) {
+	$safe_command = mysql_real_escape_string(strtolower($what));
+	$query = "SELECT * FROM commands WHERE command_type = 'is_it' AND lower(command) = '".$safe_command."'";
+	$result = mysql_query($query) or die(mysql_error());
+
+	if ($row = mysql_fetch_assoc($result)) {
+		eval($row['code']);
+	}
 }
 
 
