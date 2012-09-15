@@ -8,6 +8,10 @@ function command(prompt_element) {
 	if(val == '')
 		return false;
 
+    if (val == 'clear'){
+        $('#output').html('');
+    }
+
 	print_input(val, current_user_name);
 
 	var url = '/ajax.php?fkt=command&command=' + encodeURIComponent(val);
@@ -65,6 +69,34 @@ function put_online()
     });
 }
 
+$.fn.setCursorPosition = function(position){
+    if(this.length == 0) return this;
+    return $(this).setSelection(position, position);
+}
+
+$.fn.setSelection = function(selectionStart, selectionEnd) {
+    if(this.length == 0) return this;
+    input = this[0];
+
+    if (input.createTextRange) {
+        var range = input.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', selectionEnd);
+        range.moveStart('character', selectionStart);
+        range.select();
+    } else if (input.setSelectionRange) {
+        input.focus();
+        input.setSelectionRange(0, selectionEnd);
+    }
+
+    return this;
+}
+
+$.fn.focusEnd = function(){
+    this.setCursorPosition(this.val().length);
+    return this;
+}
+
 function hook_up_history(){
     $('#prompt').on('keydown', function(e){
         var $p = $(this);
@@ -75,12 +107,14 @@ function hook_up_history(){
                 historyIndex = historyIndex > inputHistory.length ? inputHistory.length : historyIndex;
 
                 $p.val(inputHistory[historyIndex]);
+                $p.focusEnd();
                 break;
             case 38: // up
                 historyIndex = historyIndex -1;
                 historyIndex = historyIndex < 0 ? 0 : historyIndex;
 
                 $p.val(inputHistory[historyIndex]);
+                $p.focusEnd();
                 break;
         }
     });
@@ -91,7 +125,9 @@ function print_output(content) {
 
 	$('#output').append(to_print);
 	//$('output').scrollTo('bottom');
-	$('#output')[0].scrollTop = $('#output')[0].scrollHeight;
+	//$('#output')[0].scrollTop = $('#output')[0].scrollHeight;
+
+    $('#output').scrollTo('100%', 800);
 }
 
 function print_input(content, username) {
