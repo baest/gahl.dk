@@ -79,15 +79,7 @@ function command() {
 
 	$command = strtolower(strtok($_REQUEST['command'], ' '));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	if (preg_match('/^def(?:ine|img|youtube)$/', $command)) {
-=======
-	if (preg_match('/^defi(?:ne|mg)$/', $command)) {
->>>>>>> a5a5b8aec69e9334df105b98baed7aee3ed24da6
-=======
-	if (preg_match('/^defi(?:ne|mg)$/', $command)) {
->>>>>>> a5a5b8aec69e9334df105b98baed7aee3ed24da6
 		return define_command($_REQUEST['command']);
 	}
 	
@@ -196,15 +188,7 @@ function wallanswer($inputstring)
 function define_command($command) {
 	$command = stripslashes($_REQUEST['command']);
 	$matches = array();
-<<<<<<< HEAD
-<<<<<<< HEAD
 	if (!preg_match('/^(def\w+) (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
-=======
-	if (!preg_match('/^(defi(?:ne|mg)) (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
->>>>>>> a5a5b8aec69e9334df105b98baed7aee3ed24da6
-=======
-	if (!preg_match('/^(defi(?:ne|mg)) (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
->>>>>>> a5a5b8aec69e9334df105b98baed7aee3ed24da6
 		echo "Du er en FEJL!";
 		return;
 	}
@@ -224,16 +208,10 @@ function define_command($command) {
 
 	if ($type == 'defimg')
 		$definitions = "<img src=\"$definitions\" height=\"300\" />";
-<<<<<<< HEAD
-<<<<<<< HEAD
 	elseif ($type == 'defyoutube') {
 		$definitions = (strpos($definitions,'?') == false) ? $definitions . '?' : $definitions . '&'; //Add url parameter separater to end of definition url
-		$definitions = "<iframe width=\"560\" height=\"290\" src=\"$definitions\"" . "autoplay=1\" frameborder=\"0\" allowfullscreen></iframe>";
+		$definitions = "<iframe width=\"560\" height=\"290\" src=\"$definitions" . "autoplay=1&autohide=1\" frameborder=\"0\" allowfullscreen></iframe>";
 	}
-=======
->>>>>>> a5a5b8aec69e9334df105b98baed7aee3ed24da6
-=======
->>>>>>> a5a5b8aec69e9334df105b98baed7aee3ed24da6
 
 	$query = "SELECT * FROM commands WHERE lower(command) = '".mysql_real_escape_string($command)."'";
 	$result = mysql_query($query) or die(mysql_error());
