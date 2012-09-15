@@ -1,3 +1,6 @@
+var inputHistory = [],
+    historyIndex = 0;
+
 function command(prompt_element) {
     var $p = $(prompt_element),
         val = $p.val();
@@ -16,7 +19,10 @@ function command(prompt_element) {
             print_output(data)
         }
     });
-			
+
+    inputHistory.push(val);
+    historyIndex =  inputHistory.length;
+
 	$p.val('');
 }
 
@@ -55,6 +61,27 @@ function put_online()
             }
 
             window.setTimeout(put_online, 1000);
+        }
+    });
+}
+
+function hook_up_history(){
+    $('#prompt').on('keydown', function(e){
+        var $p = $(this);
+
+        switch (e.keyCode) {
+            case 40: // down
+                historyIndex = historyIndex +1;
+                historyIndex = historyIndex > inputHistory.length ? inputHistory.length : historyIndex;
+
+                $p.val(inputHistory[historyIndex]);
+                break;
+            case 38: // up
+                historyIndex = historyIndex -1;
+                historyIndex = historyIndex < 0 ? 0 : historyIndex;
+
+                $p.val(inputHistory[historyIndex]);
+                break;
         }
     });
 }

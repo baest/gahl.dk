@@ -46,6 +46,8 @@
         $(function(){
             $('#prompt').focus();
 
+            hook_up_history();
+
             put_online();
         });
     </script>
