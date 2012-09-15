@@ -72,14 +72,12 @@ function write_to_wall($safe_content, $a_human_writes_this=true) {
 }
 
 function command() {
-	write_to_IRC(current_user()->name, $_REQUEST['command']);
-
 	// Det er kommandoer der ikke bliver slået op i DBen, men som er hard code implementeret.
 	$true_commands = array("wall", "væg", "skriv", "whatup");
 
 	$command = strtolower(strtok($_REQUEST['command'], ' '));
 
-	if ($command == 'define') {
+	if (preg_match('/^defi(?:ne|mg)$/', $command)) {
 		return define_command($_REQUEST['command']);
 	}
 	
@@ -188,22 +186,26 @@ function wallanswer($inputstring)
 function define_command($command) {
 	$command = stripslashes($_REQUEST['command']);
 	$matches = array();
-	if (!preg_match('/^define (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
+	if (!preg_match('/^(defi(?:ne|mg)) (?:"([^"]+)"|(\w+)) (.*)$/i', $command, $matches)) {
 		echo "Du er en FEJL!";
 		return;
 	}
 
-	$definitions = $matches[3];
+	$type = $matches[1];
+	$definitions = $matches[4];
 
-	$command = strtolower($matches[1]);
+	$command = strtolower($matches[2]);
 
 	if (!$command)
-		$command = strtolower($matches[2]);
+		$command = strtolower($matches[3]);
 
 	if (!$definitions) {
 		echo "Du skal angive en betydning";
 		return;
 	}
+
+	if ($type == 'defimg')
+		$definitions = "<img src=\"$definitions\" height=\"300\" />";
 
 	$query = "SELECT * FROM commands WHERE lower(command) = '".mysql_real_escape_string($command)."'";
 	$result = mysql_query($query) or die(mysql_error());
