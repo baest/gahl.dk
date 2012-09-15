@@ -2,7 +2,9 @@
 session_start();
 
 function get_message($type) {
-	return "SUCKER";
+	$quote = get_random_quote()->{'quote'};
+	return "SUCKER... men som man siger:<br /><em>&quot;$quote&quot;</em>";
+	//return "SUCKER";
 	// $query = "SELECT * FROM messages WHERE message_type='cmd_not_found' order by rand() limit 1";
 	// $result = mysql_query($query) or die(mysql_error());
 	// if($row = mysql_fetch_assoc($result)){
@@ -37,8 +39,25 @@ function user_login() {
 
 		$_SESSION['people_id'] = $user_id;
 	}
-
-
 }
+
+function get_random_quote() 
+{
+	$quote_json_url = 'http://iheartquotes.com/api/v1/random?max_lines=2&max_characters=100&show_source=false&show_permalink=false&format=json';
+	$ch = curl_init( $quote_json_url );
+	 
+	$options = array(
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HTTPHEADER => array('Content-type: application/json') ,
+		CURLOPT_POSTFIELDS => $quote_json_url
+	);
+	 
+	curl_setopt_array( $ch, $options );
+	 
+	$result = json_decode(curl_exec($ch));
+
+	return $result;
+}
+
 
 ?>

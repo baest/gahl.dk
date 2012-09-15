@@ -72,6 +72,8 @@ function write_to_wall($safe_content, $a_human_writes_this=true) {
 }
 
 function command() {
+	write_to_IRC(current_user()->name, $_REQUEST['command']);
+
 	// Det er kommandoer der ikke bliver slået op i DBen, men som er hard code implementeret.
 	$true_commands = array("wall", "væg", "skriv", "whatup");
 
