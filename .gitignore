@@ -1,2 +1,3 @@
-includes/db_pass.php
+.DS_Store
 .idea
+includes/db_pass.php
