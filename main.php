@@ -14,9 +14,9 @@
 			
 				<div><b><?php echo $row['name']; ?></b> - <i><?php echo $row['formated_date']; ?></i><br /> <?php echo $row['Post']; ?></div>
 				<hr />
-				<? if($row['ID']>$last_wall_id) $last_wall_id = $row['ID']; ?>
+				<?php if($row['ID']>$last_wall_id) $last_wall_id = $row['ID']; ?>
 			<? } 
 		?>
 	</div>
 </div>
-<script type="text/javascript">last_wall_id = <?php echo $last_wall_id ?>;</script>
+<script type="text/javascript">last_wall_id = <?php echo $last_wall_id; ?>;</script>

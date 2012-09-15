@@ -10,22 +10,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" href="css/styles.css" type="text/css" />
 
-	<script type="text/javascript" src="js/prototype.js"></script>
-
-	<script type="text/javascript" src="js/console.js"></script>
-
-	<script type="text/javascript">
-		var current_user_name = '<?php echo current_user()->name; ?>';
-		var last_commands_log_id = 99999999;
-		var last_wall_id = 99999999;
-		
-		Event.observe(window, 'load', function() {
-			
-			$('prompt').focus();
-
-			put_online();
-		});
-	</script>
 	<script type="text/javascript">
 
 	  var _gaq = _gaq || [];
@@ -51,6 +35,20 @@
 <?php require_once('console.php'); ?>
 </div>
 
+    <script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="js/console.js"></script>
+
+    <script type="text/javascript">
+        var current_user_name = '<?php echo current_user()->name; ?>';
+        var last_commands_log_id = 99999999;
+        var last_wall_id = 99999999;
+
+        $(function(){
+            $('#prompt').focus();
+
+            put_online();
+        });
+    </script>
 </body>
 </html>
 
