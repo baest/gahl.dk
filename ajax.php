@@ -85,7 +85,6 @@ function command() {
 
 	$matches = array();
 	if (preg_match('/^Er de[tr] (.+?)(?:\?|$)/', $_REQUEST['command'], $matches)) {
-		echo print_r($matches, 1);
 		return get_is_it_command($_REQUEST['command'], $matches[1]);
 	}
 	
@@ -197,6 +196,11 @@ function define_command($command) {
 
 	if (!$definitions) {
 		echo "Du skal angive en betydning";
+		return;
+	}
+
+	if (strpos($definitions, 'php') !== false) {
+		echo "Du prøver vist at fucke med os luder";
 		return;
 	}
 
