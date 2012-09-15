@@ -209,8 +209,7 @@ function define_command($command) {
 	if ($type == 'defimg')
 		$definitions = "<img src=\"$definitions\" height=\"300\" />";
 	elseif ($type == 'defyoutube') {
-		$definitions = (strpos($definitions,'?') == false) ? $definitions . '?' : $definitions . '&'; //Add url parameter separater to end of definition url
-		$definitions = "<iframe width=\"560\" height=\"290\" src=\"$definitions" . "autoplay=1&autohide=1\" frameborder=\"0\" allowfullscreen></iframe>";
+		$definitions = "<iframe width=\"560\" height=\"290\" src=\"http://www.youtube.com/embed/$definitions" . "?autoplay=1&autohide=1\" frameborder=\"0\" allowfullscreen></iframe>";
 	}
 
 	$query = "SELECT * FROM commands WHERE lower(command) = '".mysql_real_escape_string($command)."'";
