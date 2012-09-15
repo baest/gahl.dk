@@ -75,7 +75,7 @@ function command() {
 	write_to_IRC(current_user()->name, $_REQUEST['command']);
 
 	// Det er kommandoer der ikke bliver slået op i DBen, men som er hard code implementeret.
-	$true_commands = array("wall", "væg", "skriv", "whatup");
+	$true_commands = array("wall", "væg", "skriv");
 
 	$command = strtolower(strtok($_REQUEST['command'], ' '));
 
@@ -92,18 +92,6 @@ function command() {
 			}
 			else {
 				echo "Skriv noget mere for at få det på væggen - nød!";
-			}
-		}
-		elseif ($command=='whatup') {
-			$query = "SELECT * FROM commandsLog ORDER BY called_on DESC LIMIT 3";
-			$result = mysql_query($query) or die(mysql_error());
-			echo "well...<br />";
-			while($row=mysql_fetch_assoc($result)) 
-			{ 
-				echo $row["called_on"];
-				echo ": ";
-				echo $row["command"];
-				echo "<br />";
 			}
 		}
 		return;
