@@ -44,6 +44,10 @@
         var last_commands_log_id = 99999999;
         var last_wall_id = 99999999;
 
+				if (window.location.hash) {
+					$('#prompt').val(window.location.hash.substr(1));$('form').submit();
+				}
+
         $(function(){
             $('#prompt').focus();
 
